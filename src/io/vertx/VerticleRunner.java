@@ -9,6 +9,7 @@ public class VerticleRunner {
 
 		Vertx vertx = Vertx.vertx();
 
+		
         vertx.deployVerticle(MyVerticle.class.getName());
 	}
 

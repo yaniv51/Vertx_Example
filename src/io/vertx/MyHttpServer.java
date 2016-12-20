@@ -24,7 +24,7 @@ public class MyHttpServer {
 			response.putHeader("content-type", "text/plain");
 			
 			response.end("Hello World");
-		});
+		}); 
 		
 		server.listen(port, result -> {
 	          if (result.succeeded()) {

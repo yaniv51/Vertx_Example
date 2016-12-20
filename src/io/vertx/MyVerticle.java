@@ -16,6 +16,7 @@ public class MyVerticle extends AbstractVerticle{
 		server.CreateHttpServer(8080, fut);
 	}
 	
+	
 	@Override
 	public void stop(Future<Void> stopFuture) throws Exception {
         System.out.println("MyVerticle stopped!");
