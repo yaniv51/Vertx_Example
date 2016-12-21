@@ -3,15 +3,14 @@ package io.vertx;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 
-public class MyVerticle extends AbstractVerticle{
+public class VertxVerticle extends AbstractVerticle{
 	
 	private MyHttpServer server = null;
 	
 	@Override
 	public void start(Future<Void> fut)
 	{
-		System.out.println("MyVerticle started!");
-		
+		System.out.println("VertxVerticle started!");
 		server = new MyHttpServer(vertx);
 		server.CreateHttpServer(8080, fut);
 	}
@@ -19,7 +18,7 @@ public class MyVerticle extends AbstractVerticle{
 	
 	@Override
 	public void stop(Future<Void> stopFuture) throws Exception {
-        System.out.println("MyVerticle stopped!");
+        System.out.println("VertxVerticle stopped!");
         if(server!= null)
         	server.StopHttpServer();
     }

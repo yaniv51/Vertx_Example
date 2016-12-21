@@ -9,33 +9,52 @@ import io.vertx.ext.web.Router;
 public class MyHttpServer {
 	
 	private Vertx _vertx;
-	private HttpServer server;
+	private HttpServer _server;
+	private Router _router;
 	
 	public MyHttpServer(Vertx vertx)
 	{
 		_vertx = vertx;
+		_router = Router.router(_vertx);
 	}
 	
 	public void CreateHttpServer(int port, Future<Void> fut)
 	{
-		server = _vertx.createHttpServer();
+		_server = _vertx.createHttpServer();
 		
-
-		Router router = Router.router(_vertx);
+		//create route for /healthcheck
+		_router.route().path("/healthcheck/").handler(routingContext -> {
+			HttpServerResponse response = routingContext.response();
+			  response.putHeader("content-type", "text/plain");
+			  
+			  response.end("I'm alive!!!");
+		});
 		
-		router.route().handler(routingContext -> {
-
+		//create route for /hello
+		_router.route().path("/hello/").handler(routingContext -> {
 			  // This handler will be called for every request
 			  HttpServerResponse response = routingContext.response();
 			  response.putHeader("content-type", "text/plain");
+			  
+			  String userName = routingContext.request().getParam("name");
+			  
+			  String srtResponse = String.format("Hello %s!", userName != null? userName : "");
 
 			  // Write to the response and end it
-			  response.end("Vert.x-Web Routing!");
-			});
+			  response.end(srtResponse);
+		});
 		
-		server.requestHandler(router::accept);
+		//end error for any other routes
+		_router.route().handler(routingContext -> {
+			HttpServerResponse response = routingContext.response();
+			response.putHeader("content-type", "text/plain");
+			response.setStatusCode(404);
+			response.end("404 Not Found");
+		});
 		
-		server.listen(port, result -> {
+		_server.requestHandler(_router::accept);
+		
+		_server.listen(port, result -> {
 	          if (result.succeeded()) {
 		            fut.complete();
 		          } else {
@@ -46,6 +65,6 @@ public class MyHttpServer {
 	
 	public void StopHttpServer()
 	{
-		server.close();
+		_server.close();
 	}
 }
