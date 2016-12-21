@@ -4,6 +4,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.ext.web.Router;
 
 public class MyHttpServer {
 	
@@ -19,12 +20,20 @@ public class MyHttpServer {
 	{
 		server = _vertx.createHttpServer();
 		
-		server.requestHandler(request->{
-			HttpServerResponse response = request.response();
-			response.putHeader("content-type", "text/plain");
-			
-			response.end("Hello World");
-		}); 
+
+		Router router = Router.router(_vertx);
+		
+		router.route().handler(routingContext -> {
+
+			  // This handler will be called for every request
+			  HttpServerResponse response = routingContext.response();
+			  response.putHeader("content-type", "text/plain");
+
+			  // Write to the response and end it
+			  response.end("Vert.x-Web Routing!");
+			});
+		
+		server.requestHandler(router::accept);
 		
 		server.listen(port, result -> {
 	          if (result.succeeded()) {
